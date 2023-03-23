@@ -16,12 +16,17 @@ import {
   TableContainer,
   Text,
   Input,
+  InputGroup,
+  InputRightElement,
   Grid,
   SimpleGrid,
 } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 
 export default function PokemonList() {
   const [pokemons, setPokemons] = useState([""]);
+  const newArray = [];
+
   useEffect(() => {
     getAllNames();
   }, []);
@@ -33,7 +38,7 @@ export default function PokemonList() {
     let responseAsJson = await response.json();
 
     for (let i = 0; i < responseAsJson.results.length; i++) {
-      pokemons.push({
+      newArray.push({
         id: i + 1,
         name: responseAsJson.results[i].name,
         types: [],
@@ -41,7 +46,7 @@ export default function PokemonList() {
     }
 
     getAllTypes();
-    console.log(pokemons);
+    setPokemons(newArray);
   }
 
   /**fetch pokemon types */
@@ -83,16 +88,34 @@ export default function PokemonList() {
   //     updatePokemonList();
   // };
   return (
-    <div>
-      <SimpleGrid columns={4} className="ChakraGrid" spacing={6}>
-        {pokemons.map((pokemon, key) => (
-          <Card key={key}>
-            <CardBody>
-              <Text>{pokemon.name}</Text>
-            </CardBody>
-          </Card>
-        ))}
-      </SimpleGrid>
-    </div>
+    <>
+      <InputGroup className="ChakraInputGroup">
+        <Input
+          className="ChakraInput"
+          variant="filled"
+          placeholder="Search your Pokemon"
+          bgColor={"#FFF"}
+          _focusVisible={{ backgroundColor: "#FFF" }}
+        />
+        <InputRightElement
+          children={
+            <div className="PokeSearchIconContainer">
+              <SearchIcon className="PokeSearchIcon" />
+            </div>
+          }
+        />
+      </InputGroup>
+      <div>
+        <SimpleGrid columns={4} className="ChakraGrid" spacing={6}>
+          {pokemons.map((pokemon, key) => (
+            <Card key={key}>
+              <CardBody>
+                <Text>{pokemon.name}</Text>
+              </CardBody>
+            </Card>
+          ))}
+        </SimpleGrid>
+      </div>
+    </>
   );
 }
